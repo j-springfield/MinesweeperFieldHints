@@ -1,4 +1,8 @@
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Scanner;
 /*
  * Minesweeper Hint System Coding Assessment for Haverty's
@@ -34,11 +38,72 @@ public class FieldInput {
 			inputCommand = userInputScanner.nextLine();
 		}
 		if(inputCommand.equalsIgnoreCase("file")){
-			mineFieldLayoutFile = new File("field.txt");
+			setMineFieldLayoutFile();
+			userInputScanner.close();
 		} else if(inputCommand.equalsIgnoreCase("type")){
-			
+			mineFieldLayoutFile = null;
+			//add row and col input prompt and scan
 		} else{
 			setFieldInput();
+		}
+	}
+	
+	public static File getMineFieldLayoutFile(){
+		return mineFieldLayoutFile;
+	}
+	
+	public static void setMineFieldLayoutFile(){
+		mineFieldLayoutFile = new File("field.txt");
+		
+	}
+	
+	public static int getNumberOfFieldRows(){
+		return numberOfFieldRows;
+	}
+	
+	public static void setNumberOfFieldRows(File layoutFile){
+		BufferedReader fieldFileReader;
+		int numberOfRows = 0;
+		try {
+			fieldFileReader = new BufferedReader(new FileReader(getMineFieldLayoutFile()));
+			while(fieldFileReader.readLine() != null){
+				numberOfRows++;
+			}
+			numberOfFieldRows = numberOfRows;
+		} catch (IOException e) {
+			System.out.println("The field.txt file could not be found. Please make sure a properly formatted field.txt file is in the same directory.");
+			e.printStackTrace();
+		}
+	}
+	
+	public static void setNumberOfFieldRows(int numberOfRows){
+		if(numberOfRows > 0){
+			numberOfFieldRows = numberOfRows;
+		}
+	}
+	
+	public static int getNumberOfFieldColumns(){
+		return numberOfFieldColumns;
+	}
+	
+	public static void setNumberOfFieldColumns(File layoutFile){
+		BufferedReader fieldFileReader;
+		int numberOfColumns = 0;
+		try {
+			fieldFileReader = new BufferedReader(new FileReader(getMineFieldLayoutFile()));
+			while(fieldFileReader.readLine() != null){
+				numberOfColumns++;
+			}
+			numberOfFieldColumns = numberOfColumns;
+		} catch (IOException e) {
+			System.out.println("The field.txt file could not be found. Please make sure a properly formatted field.txt file is in the same directory.");
+			e.printStackTrace();
+		}
+	}
+	
+	public static void setNumberOfFieldColumns(int numberOfColumns){
+		if(numberOfColumns > 0){
+			numberOfFieldColumns = numberOfColumns;
 		}
 	}
 	
