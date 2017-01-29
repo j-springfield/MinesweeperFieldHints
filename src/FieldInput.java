@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 /*
  * Minesweeper Hint System Coding Assessment for Haverty's
  * 
@@ -88,13 +89,11 @@ public class FieldInput {
 	
 	public static void setNumberOfFieldColumns(File layoutFile){
 		BufferedReader fieldFileReader;
-		int numberOfColumns = 0;
+		String firstLineOfFieldFile;
 		try {
 			fieldFileReader = new BufferedReader(new FileReader(getMineFieldLayoutFile()));
-			while(fieldFileReader.readLine() != null){
-				numberOfColumns++;
-			}
-			numberOfFieldColumns = numberOfColumns;
+			firstLineOfFieldFile = fieldFileReader.readLine();
+			numberOfFieldColumns = firstLineOfFieldFile.length();
 		} catch (IOException e) {
 			System.out.println("The field.txt file could not be found. Please make sure a properly formatted field.txt file is in the same directory.");
 			e.printStackTrace();
@@ -113,6 +112,12 @@ public class FieldInput {
 	}
 	
 	public static void main(String[] args){
-		FieldInput mineField = getFieldInput();
+		//FieldInput mineField = getFieldInput();
+		setMineFieldLayoutFile();
+		setNumberOfFieldRows(getMineFieldLayoutFile());
+		setNumberOfFieldColumns(getMineFieldLayoutFile());
+		System.out.println("The number of rows are: " + getNumberOfFieldRows());
+		System.out.println("The number of columns are: " + getNumberOfFieldColumns());
+		
 	}
 }
