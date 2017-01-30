@@ -130,6 +130,7 @@ public class FieldInput {
 						mineField[fieldFileRowIndex][fieldFileColumnIndex] = CellType.MINE;
 					} else{
 						fieldFileReader.close();
+						System.err.print("The field.txt file contained a character other than a period ('.') or an asterisk ('*'). Please make sure field.txt only contains those two characters. ");
 						throw new ImproperMineFieldInputRuntimeException();
 					}
 				}
