@@ -1,10 +1,8 @@
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 /*
  * Minesweeper Hint System Coding Assessment for Haverty's
  * This class handles file input and conversion to arrays that can be worked with in the MineField class.
