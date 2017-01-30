@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  */
 
 public class FieldInput {
-	private static enum CellType{
+	static enum CellType{
 		NOMINE, MINE
 	}
 	private static int numberOfFieldRows;
@@ -25,30 +25,30 @@ public class FieldInput {
 	private static FieldInput mineFieldInput = null;
 	
 	FieldInput(){
-		mineFieldInput = new FieldInput();
-		this.numberOfFieldRows = 0;
-		this.numberOfFieldColumns = 0;
+		//mineFieldInput = new FieldInput();
+		//this.numberOfFieldRows = 0;
+		//this.numberOfFieldColumns = 0;
 	}
 	
-	public static FieldInput getFieldInput(){
+	public FieldInput getFieldInput(){
 		if(mineFieldInput == null){
 			mineFieldInput = new FieldInput();
 		}
 		return mineFieldInput;
 	}
 	
-	public static void setFieldInput(){
+	public void setFieldInput(FieldInput fieldInput){
 		while(!inputCommand.equalsIgnoreCase("quit") && !inputCommand.equalsIgnoreCase("file")){
 			promptUserForInput();
 			inputCommand = userInputScanner.nextLine();
 		}
 		if(inputCommand.equalsIgnoreCase("file")){
-			setMineFieldLayoutFile();
+			fieldInput.setMineFieldLayoutFile();
 			userInputScanner.close();
 		} else if(inputCommand.equalsIgnoreCase("quit")){
 			exitProgram();
 		} else{
-			setFieldInput();
+			fieldInput.setFieldInput(fieldInput);
 		}
 	}
 	
@@ -61,16 +61,16 @@ public class FieldInput {
 		return mineFieldLayoutFile;
 	}
 	
-	public static void setMineFieldLayoutFile(){
+	public void setMineFieldLayoutFile(){
 		mineFieldLayoutFile = new File("field.txt");
 		
 	}
 	
-	public static int getNumberOfFieldRows(){
+	public int getNumberOfFieldRows(){
 		return numberOfFieldRows;
 	}
 	
-	public static void setNumberOfFieldRows(File layoutFile){
+	public void setNumberOfFieldRows(File layoutFile){
 		BufferedReader fieldFileReader;
 		int numberOfRows = 0;
 		try {
@@ -91,19 +91,22 @@ public class FieldInput {
 		}
 	}
 	*/
-	public static int getNumberOfFieldColumns(){
+	public int getNumberOfFieldColumns(){
 		return numberOfFieldColumns;
 	}
 	
-	public static void setNumberOfFieldColumns(File layoutFile){
+	public void setNumberOfFieldColumns(File layoutFile, FieldInput fieldInput){
 		BufferedReader fieldFileReader;
 		String firstLineOfFieldFile;
 		try {
 			fieldFileReader = new BufferedReader(new FileReader(getMineFieldLayoutFile()));
 			firstLineOfFieldFile = fieldFileReader.readLine();
 			numberOfFieldColumns = firstLineOfFieldFile.length();
-			if(!hasCorrectNumberOfColumns()){
-				
+			if(!hasCorrectNumberOfColumns(fieldInput)){
+				fieldFileReader.close();
+				ImproperColumnLengthRuntimeException exception = new ImproperColumnLengthRuntimeException();
+				exception.printStackTrace();
+				throw new ImproperColumnLengthRuntimeException();
 			}
 			fieldFileReader.close();
 		} catch (IOException e) {
@@ -112,13 +115,13 @@ public class FieldInput {
 		}
 	}
 	
-	private static boolean hasCorrectNumberOfColumns(){
+	private static boolean hasCorrectNumberOfColumns(FieldInput fieldInput){
 		BufferedReader fieldFileReader;
 		String lineOfFieldFile;
 		try{
 			fieldFileReader = new BufferedReader(new FileReader(getMineFieldLayoutFile()));
 			while((lineOfFieldFile = fieldFileReader.readLine()) != null){
-				if(lineOfFieldFile.length() != getNumberOfFieldColumns()){
+				if(lineOfFieldFile.length() != fieldInput.getNumberOfFieldColumns()){
 					fieldFileReader.close();
 					return false;
 				}
@@ -136,15 +139,15 @@ public class FieldInput {
 		}
 	}
 	*/
-	public static CellType [][] fieldFileToArrays(){
-		CellType [][] mineField = new CellType [getNumberOfFieldRows()][getNumberOfFieldColumns()];
+	public CellType [][] getFieldArraysFromFile(FieldInput fieldInput){
+		CellType [][] mineField = new CellType [fieldInput.getNumberOfFieldRows()][fieldInput.getNumberOfFieldColumns()];
 		BufferedReader fieldFileReader;
 		String lineOfFieldFile;
 		try {
 			fieldFileReader = new BufferedReader(new FileReader(getMineFieldLayoutFile()));
-			for(int fieldFileRowIndex = 0; fieldFileRowIndex < getNumberOfFieldRows(); fieldFileRowIndex++){
+			for(int fieldFileRowIndex = 0; fieldFileRowIndex < fieldInput.getNumberOfFieldRows(); fieldFileRowIndex++){
 				lineOfFieldFile = fieldFileReader.readLine();
-				for(int fieldFileColumnIndex = 0; fieldFileColumnIndex < getNumberOfFieldColumns(); fieldFileColumnIndex++){
+				for(int fieldFileColumnIndex = 0; fieldFileColumnIndex < fieldInput.getNumberOfFieldColumns(); fieldFileColumnIndex++){
 					if(lineOfFieldFile.charAt(fieldFileColumnIndex) == '.'){
 						mineField[fieldFileRowIndex][fieldFileColumnIndex] = CellType.NOMINE;
 					}else if(lineOfFieldFile.charAt(fieldFileColumnIndex) == '*'){
@@ -169,13 +172,20 @@ public class FieldInput {
 		return 1;
 	}
 	public static void main(String[] args){
-		//FieldInput mineField = getFieldInput();
-		setMineFieldLayoutFile();
-		setNumberOfFieldRows(getMineFieldLayoutFile());
-		setNumberOfFieldColumns(getMineFieldLayoutFile());
-		System.out.println("The number of rows are: " + getNumberOfFieldRows());
-		System.out.println("The number of columns are: " + getNumberOfFieldColumns());
-		fieldFileToArrays();
-		
+		FieldInput fieldInput = new FieldInput();
+		fieldInput.setMineFieldLayoutFile();
+		fieldInput.setNumberOfFieldRows(getMineFieldLayoutFile());
+		fieldInput.setNumberOfFieldColumns(getMineFieldLayoutFile(), fieldInput);
+		System.out.println("The number of rows are: " + fieldInput.getNumberOfFieldRows());
+		System.out.println("The number of columns are: " + fieldInput.getNumberOfFieldColumns());
+		//getFieldArraysFromFile();
+		MineField mineField = new MineField();
+		mineField.setMineFieldArrayNumberOfRows(fieldInput.getNumberOfFieldRows());
+		mineField.setMineFieldArrayNumberOfColumns(fieldInput.getNumberOfFieldColumns());
+		System.out.println(mineField.getMineFieldArrayNumberOfRows());
+		System.out.println(mineField.getMineFieldArrayNumberOfColumns());
+		mineField.setMineFieldArray(fieldInput.getFieldArraysFromFile(fieldInput));
+		System.out.println("Help.");
+		mineField.printMineFieldArrayHints();
 	}
 }
