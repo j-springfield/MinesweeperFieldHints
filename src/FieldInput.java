@@ -7,6 +7,7 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 /*
  * Minesweeper Hint System Coding Assessment for Haverty's
+ * This class handles file input and conversion to arrays that can be worked with in the MineField class.
  * 
  * @author Jerry Springfield Jr. <jay.springfield93@gmail.com>
  */
