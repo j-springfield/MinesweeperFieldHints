@@ -102,11 +102,32 @@ public class FieldInput {
 			fieldFileReader = new BufferedReader(new FileReader(getMineFieldLayoutFile()));
 			firstLineOfFieldFile = fieldFileReader.readLine();
 			numberOfFieldColumns = firstLineOfFieldFile.length();
+			if(!hasCorrectNumberOfColumns()){
+				
+			}
 			fieldFileReader.close();
 		} catch (IOException e) {
 			System.out.println("The field.txt file could not be found. Please make sure a properly formatted field.txt file is in the same directory.");
 			e.printStackTrace();
 		}
+	}
+	
+	private static boolean hasCorrectNumberOfColumns(){
+		BufferedReader fieldFileReader;
+		String lineOfFieldFile;
+		try{
+			fieldFileReader = new BufferedReader(new FileReader(getMineFieldLayoutFile()));
+			while((lineOfFieldFile = fieldFileReader.readLine()) != null){
+				if(lineOfFieldFile.length() != getNumberOfFieldColumns()){
+					fieldFileReader.close();
+					return false;
+				}
+			}
+			fieldFileReader.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		return true;
 	}
 	/*
 	public static void setNumberOfFieldColumns(int numberOfColumns){
@@ -130,8 +151,9 @@ public class FieldInput {
 						mineField[fieldFileRowIndex][fieldFileColumnIndex] = CellType.MINE;
 					} else{
 						fieldFileReader.close();
-						System.err.print("The field.txt file contained a character other than a period ('.') or an asterisk ('*'). Please make sure field.txt only contains those two characters. ");
-						throw new ImproperMineFieldInputRuntimeException();
+						IllegalCharacterInFieldFileRuntimeException exception = new IllegalCharacterInFieldFileRuntimeException();
+						exception.printStackTrace();
+						throw new IllegalCharacterInFieldFileRuntimeException();
 					}
 				}
 			}

@@ -1,12 +1,15 @@
+/*
+ * Minesweeper Hint System Coding Assessment for Haverty's
+ * 
+ * 
+ * @author Jerry Springfield Jr. <jay.springfield93@gmail.com>
+ */
 
 public class MineField {
-	private static enum CellType{
-		NOMINE, MINE
-	}
-	
-	private CellType mineFieldArray [][];
+	private char mineFieldArray [][];
 	private int mineFieldArrayNumberOfRows;
 	private int mineFieldArrayNumberOfColumns;
+	private int numberOfMines = 0;
 	
 	public MineField(){
 		FieldInput fieldInput = null;
@@ -14,15 +17,15 @@ public class MineField {
 		fieldInput.setMineFieldLayoutFile();
 	}
 	
-	public CellType [][] getMineFieldArray(){
+	public char [][] getMineFieldArray(){
 		return mineFieldArray;
 	}
-	
-	public void setMineFieldArray(){
-		mineFieldArray = new CellType[getMineFieldArrayNumberOfRows()][getMineFieldArrayNumberOfColumns()];
-		//while()
+	/*
+	public void setMineFieldArray(CellType [][] mineFieldCellTypeArrays){
+		for(int mineFieldRowIndex = 0; mineFieldRowIndex < )
+		
 	}
-	
+	*/
 	public int getMineFieldArrayNumberOfRows(){
 		return mineFieldArrayNumberOfRows;
 	}
