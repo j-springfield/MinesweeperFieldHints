@@ -24,12 +24,6 @@ public class FieldInput {
 	
 	private static FieldInput mineFieldInput = null;
 	
-	FieldInput(){
-		//mineFieldInput = new FieldInput();
-		//this.numberOfFieldRows = 0;
-		//this.numberOfFieldColumns = 0;
-	}
-	
 	public FieldInput getFieldInput(){
 		if(mineFieldInput == null){
 			mineFieldInput = new FieldInput();
@@ -84,13 +78,7 @@ public class FieldInput {
 			e.printStackTrace();
 		}
 	}
-	/*
-	public static void setNumberOfFieldRows(int numberOfRows){
-		if(numberOfRows > 0){
-			numberOfFieldRows = numberOfRows;
-		}
-	}
-	*/
+	
 	public int getNumberOfFieldColumns(){
 		return numberOfFieldColumns;
 	}
@@ -132,13 +120,7 @@ public class FieldInput {
 		}
 		return true;
 	}
-	/*
-	public static void setNumberOfFieldColumns(int numberOfColumns){
-		if(numberOfColumns > 0){
-			numberOfFieldColumns = numberOfColumns;
-		}
-	}
-	*/
+
 	public CellType [][] getFieldArraysFromFile(FieldInput fieldInput){
 		CellType [][] mineField = new CellType [fieldInput.getNumberOfFieldRows()][fieldInput.getNumberOfFieldColumns()];
 		BufferedReader fieldFileReader;
@@ -178,14 +160,10 @@ public class FieldInput {
 		fieldInput.setNumberOfFieldColumns(getMineFieldLayoutFile(), fieldInput);
 		System.out.println("The number of rows are: " + fieldInput.getNumberOfFieldRows());
 		System.out.println("The number of columns are: " + fieldInput.getNumberOfFieldColumns());
-		//getFieldArraysFromFile();
 		MineField mineField = new MineField();
 		mineField.setMineFieldArrayNumberOfRows(fieldInput.getNumberOfFieldRows());
 		mineField.setMineFieldArrayNumberOfColumns(fieldInput.getNumberOfFieldColumns());
-		System.out.println(mineField.getMineFieldArrayNumberOfRows());
-		System.out.println(mineField.getMineFieldArrayNumberOfColumns());
 		mineField.setMineFieldArray(fieldInput.getFieldArraysFromFile(fieldInput));
-		System.out.println("Help.");
 		mineField.printMineFieldArrayHints();
 	}
 }

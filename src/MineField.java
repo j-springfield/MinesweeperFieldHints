@@ -6,7 +6,7 @@
  */
 
 public class MineField {
-	private char mineFieldArray [][];
+	private String mineFieldArray [][];
 	private int mineFieldArrayNumberOfRows;
 	private int mineFieldArrayNumberOfColumns;
 	
@@ -17,25 +17,26 @@ public class MineField {
 		mineFieldArrayNumberOfColumns = fieldInput.getNumberOfFieldColumns();
 	}
 	
-	public char [][] getMineFieldArray(){
+	public String [][] getMineFieldArray(){
 		return mineFieldArray;
 	}
 	
 	public void setMineFieldArray(FieldInput.CellType [][] mineFieldCellTypeArrays){
+		mineFieldArray = new String[getMineFieldArrayNumberOfRows()][getMineFieldArrayNumberOfColumns()];
 		for(int mineFieldRowIndex = 0; mineFieldRowIndex < getMineFieldArrayNumberOfRows(); mineFieldRowIndex++){
 			for(int mineFieldColumnIndex = 0; mineFieldColumnIndex < getMineFieldArrayNumberOfColumns(); mineFieldColumnIndex++){
 				if(mineFieldCellTypeArrays[mineFieldRowIndex][mineFieldColumnIndex] == FieldInput.CellType.MINE){
-					mineFieldArray[mineFieldRowIndex][mineFieldColumnIndex] = '*';
+					mineFieldArray[mineFieldRowIndex][mineFieldColumnIndex] = "*";
 				} else if(mineFieldCellTypeArrays[mineFieldRowIndex][mineFieldColumnIndex] == FieldInput.CellType.NOMINE){
-					mineFieldArray[mineFieldRowIndex][mineFieldColumnIndex] = (char) getNumberOfSurroundingMines(mineFieldRowIndex, mineFieldColumnIndex, mineFieldCellTypeArrays);
+					mineFieldArray[mineFieldRowIndex][mineFieldColumnIndex] = getNumberOfSurroundingMines(mineFieldRowIndex, mineFieldColumnIndex, mineFieldCellTypeArrays).toString();
 				}
 			}
 		}
 		
 	}
 	
-	private int getNumberOfSurroundingMines(int fieldRowIndex, int fieldColumnIndex, FieldInput.CellType [][] mineFieldCellTypeArrays){
-		int numberOfSurroundingMines = 0;
+	private Integer getNumberOfSurroundingMines(int fieldRowIndex, int fieldColumnIndex, FieldInput.CellType [][] mineFieldCellTypeArrays){
+		Integer numberOfSurroundingMines = 0;
 		if(fieldRowIndex - 1 >= 0 && isInBounds(fieldRowIndex - 1, fieldColumnIndex)){
 			if(mineFieldCellTypeArrays[fieldRowIndex - 1][fieldColumnIndex] == FieldInput.CellType.MINE){
 				numberOfSurroundingMines++;
@@ -110,22 +111,5 @@ public class MineField {
 			}
 			System.out.println();
 		}
-	}
-	
-	public static void main(String[] args){
-		/*System.out.println("Running test for printing the field. Help.");
-		FieldInput fieldInput = new FieldInput();
-		fieldInput.setMineFieldLayoutFile();
-		fieldInput.setNumberOfFieldRows(fieldInput.getMineFieldLayoutFile());
-		fieldInput.setNumberOfFieldColumns(fieldInput.getMineFieldLayoutFile(), fieldInput);
-		System.out.println("The number of rows are: " + fieldInput.getNumberOfFieldRows());
-		System.out.println("The number of columns are: " + fieldInput.getNumberOfFieldColumns());
-		MineField mineField = new MineField();
-		mineField.setMineFieldArrayNumberOfRows(fieldInput.getNumberOfFieldRows());
-		mineField.setMineFieldArrayNumberOfColumns(fieldInput.getNumberOfFieldColumns());
-		System.out.println(mineField.getMineFieldArrayNumberOfRows());
-		System.out.println(mineField.getMineFieldArrayNumberOfColumns());
-		mineField.setMineFieldArray(fieldInput.getFieldArraysFromFile(fieldInput));
-		mineField.printMineFieldArrayHints();*/
 	}
 }
