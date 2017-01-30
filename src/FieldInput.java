@@ -12,6 +12,9 @@ import java.util.regex.Pattern;
  */
 
 public class FieldInput {
+	private static enum CellType{
+		NOMINE, MINE
+	}
 	private static int numberOfFieldRows;
 	private static int numberOfFieldColumns;
 	private static File mineFieldLayoutFile = null;
@@ -20,7 +23,7 @@ public class FieldInput {
 	
 	private static FieldInput mineFieldInput = null;
 	
-	private FieldInput(){
+	FieldInput(){
 		mineFieldInput = new FieldInput();
 		this.numberOfFieldRows = 0;
 		this.numberOfFieldColumns = 0;
@@ -34,19 +37,23 @@ public class FieldInput {
 	}
 	
 	public static void setFieldInput(){
-		while(!inputCommand.equalsIgnoreCase("type") && !inputCommand.equalsIgnoreCase("file")){
+		while(!inputCommand.equalsIgnoreCase("quit") && !inputCommand.equalsIgnoreCase("file")){
 			promptUserForInput();
 			inputCommand = userInputScanner.nextLine();
 		}
 		if(inputCommand.equalsIgnoreCase("file")){
 			setMineFieldLayoutFile();
 			userInputScanner.close();
-		} else if(inputCommand.equalsIgnoreCase("type")){
-			mineFieldLayoutFile = null;
-			//add row and col input prompt and scan
+		} else if(inputCommand.equalsIgnoreCase("quit")){
+			exitProgram();
 		} else{
 			setFieldInput();
 		}
+	}
+	
+	public static void promptUserForInput(){
+		System.out.println("Would you like to read a mine field from a text file or quit the program? (Type either 'file' or 'quit'.)");
+		System.out.println("NOTE: Inputting 'file' will make the assumption that the .txt file is in the same directory and is named 'field.txt'.");
 	}
 	
 	public static File getMineFieldLayoutFile(){
@@ -76,13 +83,13 @@ public class FieldInput {
 			e.printStackTrace();
 		}
 	}
-	
+	/*
 	public static void setNumberOfFieldRows(int numberOfRows){
 		if(numberOfRows > 0){
 			numberOfFieldRows = numberOfRows;
 		}
 	}
-	
+	*/
 	public static int getNumberOfFieldColumns(){
 		return numberOfFieldColumns;
 	}
@@ -94,23 +101,49 @@ public class FieldInput {
 			fieldFileReader = new BufferedReader(new FileReader(getMineFieldLayoutFile()));
 			firstLineOfFieldFile = fieldFileReader.readLine();
 			numberOfFieldColumns = firstLineOfFieldFile.length();
+			fieldFileReader.close();
 		} catch (IOException e) {
 			System.out.println("The field.txt file could not be found. Please make sure a properly formatted field.txt file is in the same directory.");
 			e.printStackTrace();
 		}
 	}
-	
+	/*
 	public static void setNumberOfFieldColumns(int numberOfColumns){
 		if(numberOfColumns > 0){
 			numberOfFieldColumns = numberOfColumns;
 		}
 	}
-	
-	public static void promptUserForInput(){
-		System.out.println("Would you like to read a mine field from a text file, or input each line at a time? (Type either 'file' or 'type'.)");
-		System.out.println("NOTE: Inputting 'file' will make the assumption that the .txt file is in the same directory and is named 'field.txt'.");
+	*/
+	public static CellType [][] fieldFileToArrays(){
+		CellType [][] mineField = new CellType [getNumberOfFieldRows()][getNumberOfFieldColumns()];
+		BufferedReader fieldFileReader;
+		String lineOfFieldFile;
+		try {
+			fieldFileReader = new BufferedReader(new FileReader(getMineFieldLayoutFile()));
+			for(int fieldFileRowIndex = 0; fieldFileRowIndex < getNumberOfFieldRows(); fieldFileRowIndex++){
+				lineOfFieldFile = fieldFileReader.readLine();
+				for(int fieldFileColumnIndex = 0; fieldFileColumnIndex < getNumberOfFieldColumns(); fieldFileColumnIndex++){
+					if(lineOfFieldFile.charAt(fieldFileColumnIndex) == '.'){
+						mineField[fieldFileRowIndex][fieldFileColumnIndex] = CellType.NOMINE;
+					}else if(lineOfFieldFile.charAt(fieldFileColumnIndex) == '*'){
+						mineField[fieldFileRowIndex][fieldFileColumnIndex] = CellType.MINE;
+					} else{
+						fieldFileReader.close();
+						throw new ImproperMineFieldInputRuntimeException();
+					}
+				}
+			}
+			fieldFileReader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return mineField;
 	}
 	
+	private static int exitProgram(){
+		return 1;
+	}
 	public static void main(String[] args){
 		//FieldInput mineField = getFieldInput();
 		setMineFieldLayoutFile();
@@ -118,6 +151,7 @@ public class FieldInput {
 		setNumberOfFieldColumns(getMineFieldLayoutFile());
 		System.out.println("The number of rows are: " + getNumberOfFieldRows());
 		System.out.println("The number of columns are: " + getNumberOfFieldColumns());
+		fieldFileToArrays();
 		
 	}
 }
